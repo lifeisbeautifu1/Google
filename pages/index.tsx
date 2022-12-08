@@ -1,12 +1,24 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { MicrophoneIcon, ViewGridIcon } from '@heroicons/react/solid';
 import { SearchIcon } from '@heroicons/react/outline';
 
 import { Avatar, Footer } from '../components';
+import Response from '../response';
 
 const Home: NextPage = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const router = useRouter();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!searchTerm) return;
+    router.push(`/search?term=${searchTerm}`);
+  };
   return (
     <div className='flex flex-col items-center  h-screen'>
       <Head>
@@ -24,7 +36,10 @@ const Home: NextPage = () => {
           <Avatar url='https://coaching.papareact.com/ai9' />
         </div>
       </header>
-      <form className='flex flex-col items-center mt-44 flex-grow w-4/5'>
+      <form
+        onSubmit={handleSubmit}
+        className='flex flex-col items-center mt-44 flex-grow w-4/5'
+      >
         <Image
           height={100}
           width={300}
@@ -33,11 +48,24 @@ const Home: NextPage = () => {
         />
         <div className='flex w-full mt-5 hover:shadow-lg focus-within:shadow-lg max-w-md sm:max-w-xl lg:max-w-2xl border border-gray-200 px-5 py-3 items-center rounded-full'>
           <SearchIcon className='h-5 mr-3 text-gray-500' />
-          <input type='text' className='flex-grow focus:outline-none' />
+          <input
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            type='text'
+            className='flex-grow focus:outline-none'
+          />
           <MicrophoneIcon className='h-5 ' />
         </div>
         <div className='flex flex-col w-1/2 space-y-2 justify-center mt-8 sm:space-y-0 sm:flex-row sm:space-x-4'>
-          <button className='btn'>Google Search</button>
+          <button
+            onClick={() => {
+              if (!searchTerm) return;
+              router.push(`/search?term=${searchTerm}`);
+            }}
+            className='btn'
+          >
+            Google Search
+          </button>
           <button className='btn'>I'm Feeling Lucky</button>
         </div>
       </form>
